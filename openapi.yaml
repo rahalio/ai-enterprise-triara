@@ -1,0 +1,955 @@
+openapi: 3.0.3
+info:
+  title: Triara
+  version: 0.1.0
+  description: Early-adopter AI portfolio OS across investment/ROI honesty, cyber-ethics-change risk,
+    and talent mix gates.
+  x-product-slug: ai-enterprise-triara
+  x-source: ai-in-enterprise/deloitte-DI_State-of-ai-in-the-enterprise-2nd-ed/
+servers:
+- url: https://api.example.com
+tags:
+- name: Initiatives
+  description: AI initiative register
+- name: Investment
+  description: Spend and ROI attestation
+- name: Risk
+  description: Cyber assessments
+- name: Ethics
+  description: Ethics reviews
+- name: Talent
+  description: Talent mix and selector capacity
+- name: Scorecards
+  description: Executive scorecards
+- name: Waivers
+  description: Scale waivers
+- name: Governance
+  description: Audit
+paths:
+  /v1/initiatives:
+    get:
+      operationId: listAiInitiatives
+      tags:
+      - Initiatives
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      responses:
+        '200':
+          description: Initiatives
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListEnvelopeAiInitiative'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+      parameters:
+      - $ref: '#/components/parameters/Cursor'
+      - $ref: '#/components/parameters/Limit'
+    post:
+      operationId: createAiInitiative
+      tags:
+      - Initiatives
+      security:
+      - BearerAuth: []
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataEnvelopeAiInitiative'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AiInitiativeCreate'
+  /v1/initiatives/{initiativeId}:
+    parameters:
+    - name: initiativeId
+      in: path
+      required: true
+      schema:
+        type: string
+    get:
+      operationId: getAiInitiative
+      tags:
+      - Initiatives
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      responses:
+        '200':
+          description: Initiative
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataEnvelopeAiInitiative'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /v1/spend-records:
+    post:
+      operationId: recordSpend
+      tags:
+      - Investment
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      responses:
+        '201':
+          description: Spend recorded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataEnvelopeSpendRecord'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SpendRecordCreate'
+  /v1/roi-attestations:
+    get:
+      operationId: listRoiAttestations
+      tags:
+      - Investment
+      security:
+      - BearerAuth: []
+      responses:
+        '200':
+          description: ROI attestations
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListEnvelopeRoiAttestation'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+      parameters:
+      - $ref: '#/components/parameters/Cursor'
+      - $ref: '#/components/parameters/Limit'
+    post:
+      operationId: createRoiAttestation
+      tags:
+      - Investment
+      security:
+      - BearerAuth: []
+      responses:
+        '201':
+          description: Attestation created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataEnvelopeRoiAttestation'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RoiAttestationCreate'
+  /v1/cyber-assessments:
+    post:
+      operationId: createCyberAssessment
+      tags:
+      - Risk
+      security:
+      - BearerAuth: []
+      responses:
+        '201':
+          description: Cyber assessment
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataEnvelopeCyberAssessment'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CyberAssessmentCreate'
+  /v1/cyber-assessments/{assessmentId}/clear:
+    parameters:
+    - name: assessmentId
+      in: path
+      required: true
+      schema:
+        type: string
+    post:
+      operationId: clearCyberAssessment
+      tags:
+      - Risk
+      security:
+      - BearerAuth: []
+      responses:
+        '200':
+          description: Cleared
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataEnvelopeCyberAssessment'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /v1/ethics-reviews:
+    post:
+      operationId: createEthicsReview
+      tags:
+      - Ethics
+      security:
+      - BearerAuth: []
+      responses:
+        '201':
+          description: Ethics review
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataEnvelopeEthicsReview'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EthicsReviewCreate'
+  /v1/ethics-reviews/{reviewId}/approve:
+    parameters:
+    - name: reviewId
+      in: path
+      required: true
+      schema:
+        type: string
+    post:
+      operationId: approveEthicsReview
+      tags:
+      - Ethics
+      security:
+      - BearerAuth: []
+      responses:
+        '200':
+          description: Approved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataEnvelopeEthicsReview'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /v1/talent-plans:
+    post:
+      operationId: createTalentPlan
+      tags:
+      - Talent
+      security:
+      - BearerAuth: []
+      responses:
+        '201':
+          description: Talent plan
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataEnvelopeTalentPlan'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TalentPlanCreate'
+  /v1/scorecards:
+    get:
+      operationId: listScorecards
+      tags:
+      - Scorecards
+      security:
+      - BearerAuth: []
+      responses:
+        '200':
+          description: Scorecards
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListEnvelopePortfolioScorecard'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+      parameters:
+      - $ref: '#/components/parameters/Cursor'
+      - $ref: '#/components/parameters/Limit'
+    post:
+      operationId: createScorecard
+      tags:
+      - Scorecards
+      security:
+      - BearerAuth: []
+      responses:
+        '201':
+          description: Scorecard
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataEnvelopePortfolioScorecard'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ScorecardCreate'
+  /v1/waivers:
+    post:
+      operationId: grantWaiver
+      tags:
+      - Waivers
+      security:
+      - BearerAuth: []
+      responses:
+        '201':
+          description: Waiver granted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataEnvelopeWaiver'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WaiverCreate'
+  /v1/governance/audit-entries:
+    get:
+      operationId: listAuditEntries
+      tags:
+      - Governance
+      security:
+      - BearerAuth: []
+      responses:
+        '200':
+          description: Audit
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListEnvelopeAuditEntry'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+      parameters:
+      - $ref: '#/components/parameters/Cursor'
+      - $ref: '#/components/parameters/Limit'
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-Key
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  parameters:
+    Cursor:
+      name: cursor
+      in: query
+      schema:
+        type: string
+    Limit:
+      name: limit
+      in: query
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 25
+  responses:
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Problem'
+    NotFound:
+      description: Not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Problem'
+    UnprocessableEntity:
+      description: Unprocessable entity
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Problem'
+    Conflict:
+      description: Conflict
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Problem'
+  schemas:
+    ResponseMeta:
+      type: object
+      required:
+      - requestId
+      - timestamp
+      properties:
+        requestId:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
+    Problem:
+      type: object
+      required:
+      - type
+      - title
+      - status
+      properties:
+        type:
+          type: string
+          format: uri
+        title:
+          type: string
+        status:
+          type: integer
+        detail:
+          type: string
+    AiInitiative:
+      type: object
+      required:
+      - id
+      - name
+      - stage
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        stage:
+          type: string
+          enum:
+          - pilot
+          - implementation
+          - production
+        technologyClass:
+          type: string
+        sponsorId:
+          type: string
+    DataEnvelopeAiInitiative:
+      type: object
+      required:
+      - data
+      - meta
+      properties:
+        data:
+          $ref: '#/components/schemas/AiInitiative'
+        meta:
+          $ref: '#/components/schemas/ResponseMeta'
+    ListEnvelopeAiInitiative:
+      type: object
+      required:
+      - data
+      - meta
+      properties:
+        data:
+          type: object
+          required:
+          - items
+          properties:
+            items:
+              type: array
+              items:
+                $ref: '#/components/schemas/AiInitiative'
+            nextCursor:
+              type: string
+        meta:
+          $ref: '#/components/schemas/ResponseMeta'
+    SpendRecord:
+      type: object
+      required:
+      - id
+      - initiativeId
+      - amount
+      properties:
+        id:
+          type: string
+        initiativeId:
+          type: string
+        amount:
+          type: number
+        currency:
+          type: string
+        source:
+          type: string
+          enum:
+          - budget
+          - cloud_discovery
+    DataEnvelopeSpendRecord:
+      type: object
+      required:
+      - data
+      - meta
+      properties:
+        data:
+          $ref: '#/components/schemas/SpendRecord'
+        meta:
+          $ref: '#/components/schemas/ResponseMeta'
+    ListEnvelopeSpendRecord:
+      type: object
+      required:
+      - data
+      - meta
+      properties:
+        data:
+          type: object
+          required:
+          - items
+          properties:
+            items:
+              type: array
+              items:
+                $ref: '#/components/schemas/SpendRecord'
+            nextCursor:
+              type: string
+        meta:
+          $ref: '#/components/schemas/ResponseMeta'
+    RoiAttestation:
+      type: object
+      required:
+      - id
+      - initiativeId
+      - status
+      properties:
+        id:
+          type: string
+        initiativeId:
+          type: string
+        status:
+          type: string
+          enum:
+          - claimed
+          - verified
+        roiPercent:
+          type: number
+        baselineRef:
+          type: string
+    DataEnvelopeRoiAttestation:
+      type: object
+      required:
+      - data
+      - meta
+      properties:
+        data:
+          $ref: '#/components/schemas/RoiAttestation'
+        meta:
+          $ref: '#/components/schemas/ResponseMeta'
+    ListEnvelopeRoiAttestation:
+      type: object
+      required:
+      - data
+      - meta
+      properties:
+        data:
+          type: object
+          required:
+          - items
+          properties:
+            items:
+              type: array
+              items:
+                $ref: '#/components/schemas/RoiAttestation'
+            nextCursor:
+              type: string
+        meta:
+          $ref: '#/components/schemas/ResponseMeta'
+    CyberAssessment:
+      type: object
+      required:
+      - id
+      - initiativeId
+      - status
+      properties:
+        id:
+          type: string
+        initiativeId:
+          type: string
+        status:
+          type: string
+          enum:
+          - open
+          - cleared
+          - blocked
+        criticalFindings:
+          type: integer
+    DataEnvelopeCyberAssessment:
+      type: object
+      required:
+      - data
+      - meta
+      properties:
+        data:
+          $ref: '#/components/schemas/CyberAssessment'
+        meta:
+          $ref: '#/components/schemas/ResponseMeta'
+    ListEnvelopeCyberAssessment:
+      type: object
+      required:
+      - data
+      - meta
+      properties:
+        data:
+          type: object
+          required:
+          - items
+          properties:
+            items:
+              type: array
+              items:
+                $ref: '#/components/schemas/CyberAssessment'
+            nextCursor:
+              type: string
+        meta:
+          $ref: '#/components/schemas/ResponseMeta'
+    EthicsReview:
+      type: object
+      required:
+      - id
+      - initiativeId
+      - status
+      properties:
+        id:
+          type: string
+        initiativeId:
+          type: string
+        status:
+          type: string
+          enum:
+          - pending
+          - approved
+          - rejected
+        scope:
+          type: string
+    DataEnvelopeEthicsReview:
+      type: object
+      required:
+      - data
+      - meta
+      properties:
+        data:
+          $ref: '#/components/schemas/EthicsReview'
+        meta:
+          $ref: '#/components/schemas/ResponseMeta'
+    ListEnvelopeEthicsReview:
+      type: object
+      required:
+      - data
+      - meta
+      properties:
+        data:
+          type: object
+          required:
+          - items
+          properties:
+            items:
+              type: array
+              items:
+                $ref: '#/components/schemas/EthicsReview'
+            nextCursor:
+              type: string
+        meta:
+          $ref: '#/components/schemas/ResponseMeta'
+    TalentPlan:
+      type: object
+      required:
+      - id
+      - initiativeId
+      properties:
+        id:
+          type: string
+        initiativeId:
+          type: string
+        technicalGaps:
+          type: integer
+        selectorGaps:
+          type: integer
+    DataEnvelopeTalentPlan:
+      type: object
+      required:
+      - data
+      - meta
+      properties:
+        data:
+          $ref: '#/components/schemas/TalentPlan'
+        meta:
+          $ref: '#/components/schemas/ResponseMeta'
+    ListEnvelopeTalentPlan:
+      type: object
+      required:
+      - data
+      - meta
+      properties:
+        data:
+          type: object
+          required:
+          - items
+          properties:
+            items:
+              type: array
+              items:
+                $ref: '#/components/schemas/TalentPlan'
+            nextCursor:
+              type: string
+        meta:
+          $ref: '#/components/schemas/ResponseMeta'
+    PortfolioScorecard:
+      type: object
+      required:
+      - id
+      - period
+      properties:
+        id:
+          type: string
+        period:
+          type: string
+        verifiedRoiCount:
+          type: integer
+        blockedByRisk:
+          type: integer
+        selectorGaps:
+          type: integer
+    DataEnvelopePortfolioScorecard:
+      type: object
+      required:
+      - data
+      - meta
+      properties:
+        data:
+          $ref: '#/components/schemas/PortfolioScorecard'
+        meta:
+          $ref: '#/components/schemas/ResponseMeta'
+    ListEnvelopePortfolioScorecard:
+      type: object
+      required:
+      - data
+      - meta
+      properties:
+        data:
+          type: object
+          required:
+          - items
+          properties:
+            items:
+              type: array
+              items:
+                $ref: '#/components/schemas/PortfolioScorecard'
+            nextCursor:
+              type: string
+        meta:
+          $ref: '#/components/schemas/ResponseMeta'
+    Waiver:
+      type: object
+      required:
+      - id
+      - initiativeId
+      - waiverType
+      properties:
+        id:
+          type: string
+        initiativeId:
+          type: string
+        waiverType:
+          type: string
+          enum:
+          - learning_budget
+          - risk_temporary
+        rationale:
+          type: string
+    DataEnvelopeWaiver:
+      type: object
+      required:
+      - data
+      - meta
+      properties:
+        data:
+          $ref: '#/components/schemas/Waiver'
+        meta:
+          $ref: '#/components/schemas/ResponseMeta'
+    ListEnvelopeWaiver:
+      type: object
+      required:
+      - data
+      - meta
+      properties:
+        data:
+          type: object
+          required:
+          - items
+          properties:
+            items:
+              type: array
+              items:
+                $ref: '#/components/schemas/Waiver'
+            nextCursor:
+              type: string
+        meta:
+          $ref: '#/components/schemas/ResponseMeta'
+    AuditEntry:
+      type: object
+      required:
+      - id
+      - eventType
+      - occurredAt
+      properties:
+        id:
+          type: string
+        eventType:
+          type: string
+        occurredAt:
+          type: string
+          format: date-time
+    DataEnvelopeAuditEntry:
+      type: object
+      required:
+      - data
+      - meta
+      properties:
+        data:
+          $ref: '#/components/schemas/AuditEntry'
+        meta:
+          $ref: '#/components/schemas/ResponseMeta'
+    ListEnvelopeAuditEntry:
+      type: object
+      required:
+      - data
+      - meta
+      properties:
+        data:
+          type: object
+          required:
+          - items
+          properties:
+            items:
+              type: array
+              items:
+                $ref: '#/components/schemas/AuditEntry'
+            nextCursor:
+              type: string
+        meta:
+          $ref: '#/components/schemas/ResponseMeta'
+    AiInitiativeCreate:
+      type: object
+      required:
+      - name
+      - stage
+      properties:
+        name:
+          type: string
+        stage:
+          type: string
+        technologyClass:
+          type: string
+        sponsorId:
+          type: string
+    SpendRecordCreate:
+      type: object
+      required:
+      - initiativeId
+      - amount
+      properties:
+        initiativeId:
+          type: string
+        amount:
+          type: number
+        currency:
+          type: string
+        source:
+          type: string
+    RoiAttestationCreate:
+      type: object
+      required:
+      - initiativeId
+      - status
+      properties:
+        initiativeId:
+          type: string
+        status:
+          type: string
+        roiPercent:
+          type: number
+        baselineRef:
+          type: string
+    CyberAssessmentCreate:
+      type: object
+      required:
+      - initiativeId
+      properties:
+        initiativeId:
+          type: string
+        criticalFindings:
+          type: integer
+    EthicsReviewCreate:
+      type: object
+      required:
+      - initiativeId
+      - scope
+      properties:
+        initiativeId:
+          type: string
+        scope:
+          type: string
+    TalentPlanCreate:
+      type: object
+      required:
+      - initiativeId
+      properties:
+        initiativeId:
+          type: string
+        technicalGaps:
+          type: integer
+        selectorGaps:
+          type: integer
+    WaiverCreate:
+      type: object
+      required:
+      - initiativeId
+      - waiverType
+      - rationale
+      properties:
+        initiativeId:
+          type: string
+        waiverType:
+          type: string
+        rationale:
+          type: string
+    ScorecardCreate:
+      type: object
+      required:
+      - period
+      properties:
+        period:
+          type: string
